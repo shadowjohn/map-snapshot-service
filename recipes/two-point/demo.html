@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Two Point Snapshot Demo | Map Snapshot Service</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7fa;
+      --surface: #ffffff;
+      --surface-soft: #eef3f7;
+      --line: #d6dee8;
+      --text: #182434;
+      --muted: #66778b;
+      --accent: #d43c3c;
+      --green: #34875f;
+      --shadow: 0 16px 42px rgba(24, 36, 52, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background: var(--bg);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .shell {
+      width: min(1120px, calc(100vw - 32px));
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      background: rgba(245, 247, 250, .94);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 3;
+    }
+
+    .nav {
+      min-height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: var(--accent);
+    }
+
+    main {
+      padding: 34px 0 52px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .intro {
+      margin: 12px 0 24px;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 760px;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 390px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-title {
+      min-height: 44px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    form {
+      padding: 18px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    input,
+    select {
+      min-height: 39px;
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 8px 10px;
+      color: var(--text);
+      background: #fff;
+      font: inherit;
+      font-size: 14px;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .button {
+      min-height: 42px;
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      color: #fff;
+      background: var(--accent);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .button[disabled] {
+      opacity: .72;
+      cursor: wait;
+    }
+
+    .output {
+      display: grid;
+      gap: 16px;
+    }
+
+    .image-frame {
+      min-height: 460px;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: var(--surface-soft);
+      position: relative;
+    }
+
+    .image-frame img {
+      width: min(100%, 512px);
+      height: auto;
+      display: block;
+      border-radius: 4px;
+    }
+
+    .image-frame.loading img {
+      opacity: .42;
+    }
+
+    .loading-mask {
+      position: absolute;
+      inset: 0;
+      display: none;
+      place-items: center;
+      color: var(--text);
+      background: rgba(238, 243, 247, .62);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .image-frame.loading .loading-mask {
+      display: grid;
+    }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(24, 36, 52, .18);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .75s linear infinite;
+    }
+
+    .loading-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .88);
+      box-shadow: 0 10px 24px rgba(24, 36, 52, .12);
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    pre {
+      margin: 0;
+      max-height: 240px;
+      overflow: auto;
+      padding: 16px;
+      color: #dce7f5;
+      background: #152131;
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .status {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 0 8px;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--green);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    @media (max-width: 860px) {
+      .workspace,
+      .split {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="shell nav">
+      <a class="brand" href="../../index.php">
+        <span class="brand-mark"><i class="bi bi-map"></i></span>
+        <span>Map Snapshot Service</span>
+      </a>
+      <span class="tag">Two Point</span>
+    </div>
+  </header>
+
+  <main class="shell">
+    <h1>Two Point Snapshot Demo</h1>
+    <p class="intro">輸入起點與目的地座標，選擇底圖與 REQUEST 方法，直接產出 PNG。預設範例為逢甲大學到 ICC 辦公大樓。</p>
+
+    <div class="workspace">
+      <section class="panel">
+        <div class="panel-title">
+          <span>Parameters</span>
+          <span>GET / POST</span>
+        </div>
+        <form id="snapshotForm">
+          <label class="field">sLatLon <input id="sLatLon" value="24.1782252,120.6484168"></label>
+          <label class="field">eLatLon <input id="eLatLon" value="24.1111272,120.6100528"></label>
+          <label class="field">sName <input id="sName" value="起點: 逢甲大學"></label>
+          <label class="field">eName <input id="eName" value="目的地: ICC 辦公大樓"></label>
+          <div class="split">
+            <label class="field">basemap
+              <select id="basemap">
+                <option value="osm" selected>OpenStreetMap</option>
+                <option value="google">Google Roadmap</option>
+                <option value="emap5">國土測繪 EMAP5</option>
+              </select>
+            </label>
+            <label class="field">REQUEST
+              <select id="requestMethod">
+                <option value="GET" selected>GET</option>
+                <option value="POST">POST</option>
+              </select>
+            </label>
+          </div>
+          <div class="split">
+            <label class="field">width <input id="width" value="416" inputmode="numeric"></label>
+            <label class="field">height <input id="height" value="416" inputmode="numeric"></label>
+          </div>
+          <button class="button" id="generateButton" type="submit"><i class="bi bi-image"></i><span>產生 PNG</span></button>
+        </form>
+      </section>
+
+      <section class="output">
+        <div class="panel">
+          <div class="panel-title">
+            <span>Result</span>
+            <span class="status" id="status">ready</span>
+          </div>
+          <div class="image-frame" id="imageFrame">
+            <img id="snapshotResult" alt="Generated map snapshot">
+            <div class="loading-mask" aria-live="polite">
+              <span class="loading-content"><span class="spinner"></span><span>產生中</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">
+            <span>Request Example</span>
+            <span>copyable</span>
+          </div>
+          <pre><code id="apiSnippet"></code></pre>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const form = document.getElementById('snapshotForm');
+    const image = document.getElementById('snapshotResult');
+    const snippet = document.getElementById('apiSnippet');
+    const statusText = document.getElementById('status');
+    const imageFrame = document.getElementById('imageFrame');
+    const generateButton = document.getElementById('generateButton');
+    let objectUrl = '';
+    let renderToken = 0;
+
+    function paramsFromForm() {
+      const params = new URLSearchParams();
+      for (const id of ['sLatLon', 'eLatLon', 'sName', 'eName', 'basemap', 'width', 'height']) {
+        params.set(id, document.getElementById(id).value.trim());
+      }
+      return params;
+    }
+
+    function showSnippet(method, params) {
+      if (method === 'POST') {
+        snippet.textContent = [
+          "curl -X POST 'https://3wa.tw/demo/php/map/map-snapshot-service/api/two-point.php' \\",
+          ...Array.from(params.entries()).map(([key, value]) => `  --data-urlencode '${key}=${value}'`)
+        ].join("\n");
+        return;
+      }
+
+      snippet.textContent = Array.from(params.entries())
+        .map(([key, value], index) => `  ${index === 0 ? '?' : '&'}${key}=${encodeURIComponent(value)}`)
+        .reduce((lines, line) => lines.concat(line), ['GET https://3wa.tw/demo/php/map/map-snapshot-service/api/two-point.php'])
+        .join("\n");
+    }
+
+    async function renderSnapshot(event) {
+      if (event) {
+        event.preventDefault();
+      }
+
+      const params = paramsFromForm();
+      const method = document.getElementById('requestMethod').value;
+      showSnippet(method, params);
+      statusText.textContent = 'rendering';
+      const token = ++renderToken;
+      imageFrame.classList.add('loading');
+      generateButton.disabled = true;
+      generateButton.innerHTML = '<span class="spinner"></span><span>產生中</span>';
+
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+        objectUrl = '';
+      }
+
+      if (method === 'POST') {
+        const response = await fetch('../../api/two-point.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: params
+        });
+        const blob = await response.blob();
+        objectUrl = URL.createObjectURL(blob);
+        image.src = objectUrl;
+        if (token === renderToken) {
+          imageFrame.classList.remove('loading');
+          generateButton.disabled = false;
+          generateButton.innerHTML = '<i class="bi bi-image"></i><span>產生 PNG</span>';
+          statusText.textContent = 'ready';
+        }
+      } else {
+        image.onload = () => {
+          if (token !== renderToken) {
+            return;
+          }
+          imageFrame.classList.remove('loading');
+          generateButton.disabled = false;
+          generateButton.innerHTML = '<i class="bi bi-image"></i><span>產生 PNG</span>';
+          statusText.textContent = 'ready';
+        };
+        image.onerror = image.onload;
+        image.src = `../../api/two-point.php?${params.toString()}`;
+      }
+    }
+
+    form.addEventListener('submit', renderSnapshot);
+    form.addEventListener('change', renderSnapshot);
+    renderSnapshot();
+  </script>
+</body>
+</html>
