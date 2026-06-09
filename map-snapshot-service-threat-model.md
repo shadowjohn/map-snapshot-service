@@ -38,16 +38,16 @@ Open questions:
 
 - Catalog UI: `index.php` presents recipe cards and a live two-point form.
 - Recipe demo UI: `recipes/two-point/demo.html` submits GET or POST requests to the API.
-- API entrypoint: `api/two-point.php` merges `$_GET` and `$_POST`, applies rate limiting, and returns PNG bytes.
-- Two-point recipe: `recipes/two-point/two_point_snapshot.php` validates coordinates, clamps dimensions, computes layout, and writes snapshot cache files.
-- Shared renderer: `renderer/map_snapshot_renderer.php` contains coordinate projection, provider allowlist, tile fetching, tile cache validation, tile completeness stats, attribution drawing, text drawing, and cache helpers.
+- API entrypoints: `api/single-point.php`, `api/two-point.php`, `api/line.php`, and `api/polygon.php` merge `$_GET` and `$_POST`, apply rate limiting, and return PNG bytes.
+- Recipe modules: `recipes/single-point/`, `recipes/two-point/`, `recipes/line/`, and `recipes/polygon/` validate coordinates, clamp dimensions, compute layout, and write snapshot cache files.
+- Shared renderer: `renderer/map_snapshot_renderer.php` and `recipes/_shared/geometry_snapshot.php` contain coordinate projection, provider allowlist, tile fetching, tile cache validation, tile completeness stats, attribution drawing, geometry drawing, text drawing, and cache helpers.
 - Cache store: `cache/` stores generated snapshots, tile bytes, and rate-limit counters; direct web access is denied by `cache/.htaccess`.
 
 Evidence anchors:
 
-- `api/two-point.php`: request merge, PNG response, 429 response path.
+- `api/*.php`: request merge, PNG response, 429 response path.
 - `renderer/map_snapshot_renderer.php`: `mss_basemap_definitions()`, `mss_download_map_tile()`, `mss_rate_limit_exceeded()`, cache helpers.
-- `recipes/two-point/two_point_snapshot.php`: parameter validation, dimension clamp, `sha256` cache key.
+- `recipes/*/*_snapshot.php`: parameter validation, dimension clamp, `sha256` cache key.
 - `.htaccess` and `cache/.htaccess`: deny dotfiles and cache direct access.
 
 ### Data flows and trust boundaries

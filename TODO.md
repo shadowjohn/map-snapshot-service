@@ -2,10 +2,9 @@
 
 ## Near Term
 
-- Add Single Point Snapshot recipe.
 - Add Multi Point Snapshot recipe with POST-first payload examples.
-- Add Line Snapshot recipe with stroke color, width, labels, and distance display.
-- Add Polygon / Area Snapshot recipe with WKT and GeoJSON support.
+- Add optional line stroke color, width, direction, and distance display.
+- Add WKT and GeoJSON parsers for polygon input.
 - Add provider-level daily quota counters and cache-size pruning.
 - Add clearer UI state when a provider returns incomplete tiles.
 - Add PHP client wrapper.
@@ -18,4 +17,3 @@
 - Add official Google Maps Platform Map Tiles API integration.
 - Add Baidu support after BD-09/projection handling is implemented.
 - Add CI checks for PHP syntax, smoke tests, and security-file exposure checks.
-

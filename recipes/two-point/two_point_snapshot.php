@@ -37,7 +37,8 @@ if (!function_exists('mss_two_point_marker_bounds')) {
         int $outputHeight,
         int $padding,
         array $startLabelSize,
-        array $endLabelSize
+        array $endLabelSize,
+        int $maxZoom = 20
     ): array {
         $selected = null;
         $labelGap = 12.0;
@@ -45,7 +46,7 @@ if (!function_exists('mss_two_point_marker_bounds')) {
         $labelVerticalPadding = 5.0;
         $sharedDistanceThreshold = 18.0;
 
-        for ($zoom = 20; $zoom >= 1; $zoom--) {
+        for ($zoom = min(max($maxZoom, 1), 22); $zoom >= 1; $zoom--) {
             $startWorld = mss_latlon_to_world($sLat, $sLon, $zoom);
             $endWorld = mss_latlon_to_world($eLat, $eLon, $zoom);
             $dx = $endWorld['x'] - $startWorld['x'];
@@ -185,7 +186,7 @@ if (!function_exists('mss_two_point_marker_bounds')) {
         $maxTextWidth = mss_label_max_text_width($outputWidth, $padding);
         $startLabelSize = mss_measure_label($sName, $fontPath, 14, $maxTextWidth);
         $endLabelSize = mss_measure_label($eName, $fontPath, 14, $maxTextWidth);
-        $layout = mss_two_point_build_layout_state($sLat, $sLon, $eLat, $eLon, $outputWidth, $outputHeight, $padding, $startLabelSize, $endLabelSize);
+        $layout = mss_two_point_build_layout_state($sLat, $sLon, $eLat, $eLon, $outputWidth, $outputHeight, $padding, $startLabelSize, $endLabelSize, mss_basemap_max_zoom($basemap));
 
         $image = imagecreatetruecolor($outputWidth, $outputHeight);
         imagealphablending($image, true);

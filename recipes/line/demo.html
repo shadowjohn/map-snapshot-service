@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Line Snapshot Demo | Map Snapshot Service</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    body{margin:0;min-height:100vh;color:#182434;background:#f5f7fa;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",sans-serif}.shell{width:min(1120px,calc(100vw - 32px));margin:0 auto}header{border-bottom:1px solid #d6dee8;background:rgba(245,247,250,.94);position:sticky;top:0;z-index:3}.nav{min-height:66px;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:12px;font-weight:800;text-decoration:none;color:inherit}.brand-mark{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;color:#fff;background:#d43c3c}main{padding:34px 0 52px}h1{margin:0;font-size:clamp(30px,4vw,48px);line-height:1.12}.intro{margin:12px 0 24px;color:#66778b;line-height:1.7}.workspace{display:grid;grid-template-columns:390px minmax(0,1fr);gap:18px;align-items:start}.panel{background:#fff;border:1px solid #d6dee8;border-radius:8px;box-shadow:0 16px 42px rgba(24,36,52,.12);overflow:hidden}.panel-title{min-height:44px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #d6dee8;color:#66778b;font-size:13px;font-weight:800}form{padding:18px}.field{display:grid;gap:6px;margin-bottom:12px;color:#66778b;font-size:13px;font-weight:800}input,select,textarea{min-height:39px;width:100%;border:1px solid #d6dee8;border-radius:6px;padding:8px 10px;color:#182434;background:#fff;font:inherit;font-size:14px}textarea{min-height:96px;resize:vertical}.split{display:grid;grid-template-columns:1fr 1fr;gap:10px}.button{min-height:42px;width:100%;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:7px;color:#fff;background:#d43c3c;font:inherit;font-size:14px;font-weight:800;cursor:pointer}.button[disabled]{opacity:.72;cursor:wait}.output{display:grid;gap:16px}.image-frame{min-height:460px;display:grid;place-items:center;padding:18px;background:#eef3f7;position:relative}.image-frame img{width:min(100%,512px);height:auto;display:block;border-radius:4px}.image-frame.loading img{opacity:.42}.loading-mask{position:absolute;inset:0;display:none;place-items:center;background:rgba(238,243,247,.62);font-size:14px;font-weight:800}.image-frame.loading .loading-mask{display:grid}.spinner{width:18px;height:18px;border:2px solid rgba(24,36,52,.18);border-top-color:#d43c3c;border-radius:50%;animation:spin .75s linear infinite}.loading-content{display:inline-flex;align-items:center;gap:9px;padding:9px 12px;border-radius:999px;background:rgba(255,255,255,.88);box-shadow:0 10px 24px rgba(24,36,52,.12)}@keyframes spin{to{transform:rotate(360deg)}}pre{margin:0;max-height:240px;overflow:auto;padding:16px;color:#dce7f5;background:#152131;font-size:13px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}.status,.tag{font-size:13px}.tag{display:inline-flex;align-items:center;min-height:24px;padding:0 8px;border-radius:999px;color:#fff;background:#34875f;font-weight:800}@media(max-width:860px){.workspace,.split{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header><div class="shell nav"><a class="brand" href="../../index.php"><span class="brand-mark"><i class="bi bi-map"></i></span><span>Map Snapshot Service</span></a><span class="tag">Line</span></div></header>
+  <main class="shell">
+    <h1>Line Snapshot Demo</h1>
+    <p class="intro">用 `points=lat,lon;lat,lon` 畫線段或多段線。</p>
+    <div class="workspace">
+      <section class="panel"><div class="panel-title"><span>Parameters</span><span>GET / POST</span></div>
+        <form id="snapshotForm">
+          <label class="field">points <textarea id="points">24.1782252,120.6484168;24.1111272,120.6100528</textarea></label>
+          <label class="field">name <input id="name" value="逢甲大學 → ICC 辦公大樓"></label>
+          <div class="split"><label class="field">basemap <select id="basemap"><option value="osm" selected>OpenStreetMap</option><option value="google">Google Roadmap</option><option value="emap5">國土測繪 EMAP5</option></select></label><label class="field">REQUEST <select id="requestMethod"><option value="GET" selected>GET</option><option value="POST">POST</option></select></label></div>
+          <div class="split"><label class="field">width <input id="width" value="416"></label><label class="field">height <input id="height" value="416"></label></div>
+          <button class="button" id="generateButton" type="submit"><i class="bi bi-image"></i><span>產生 PNG</span></button>
+        </form>
+      </section>
+      <section class="output"><div class="panel"><div class="panel-title"><span>Result</span><span class="status" id="status">ready</span></div><div class="image-frame" id="imageFrame"><img id="snapshotResult" alt="Generated map snapshot"><div class="loading-mask"><span class="loading-content"><span class="spinner"></span><span>產生中</span></span></div></div></div><div class="panel"><div class="panel-title"><span>Request Example</span><span>copyable</span></div><pre><code id="apiSnippet"></code></pre></div></section>
+    </div>
+  </main>
+  <script>
+    const endpoint='../../api/line.php'; const publicEndpoint='https://3wa.tw/demo/php/map/map-snapshot-service/api/line.php';
+    const form=document.getElementById('snapshotForm'), image=document.getElementById('snapshotResult'), snippet=document.getElementById('apiSnippet'), statusText=document.getElementById('status'), frame=document.getElementById('imageFrame'), button=document.getElementById('generateButton'); let objectUrl='', token=0;
+    function paramsFromForm(){const p=new URLSearchParams(); for(const id of ['points','name','basemap','width','height']) p.set(id,document.getElementById(id).value.trim()); return p;}
+    function showSnippet(method,p){snippet.textContent=method==='POST'?["curl -X POST '"+publicEndpoint+"' \\",...Array.from(p.entries()).map(([k,v])=>`  --data-urlencode '${k}=${v}'`)].join("\n"):Array.from(p.entries()).map(([k,v],i)=>`  ${i===0?'?':'&'}${k}=${encodeURIComponent(v)}`).reduce((a,l)=>a.concat(l),['GET '+publicEndpoint]).join("\n");}
+    async function render(event){if(event)event.preventDefault(); const t=++token,p=paramsFromForm(),m=document.getElementById('requestMethod').value; showSnippet(m,p); statusText.textContent='rendering'; frame.classList.add('loading'); button.disabled=true; button.innerHTML='<span class="spinner"></span><span>產生中</span>'; if(objectUrl){URL.revokeObjectURL(objectUrl);objectUrl='';} const done=()=>{if(t!==token)return; frame.classList.remove('loading'); button.disabled=false; button.innerHTML='<i class="bi bi-image"></i><span>產生 PNG</span>'; statusText.textContent='ready';}; if(m==='POST'){const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:p}); objectUrl=URL.createObjectURL(await r.blob()); image.src=objectUrl; done();} else {image.onload=done; image.onerror=done; image.src=endpoint+'?'+p.toString();}}
+    form.addEventListener('submit',render); form.addEventListener('change',render); render();
+  </script>
+</body>
+</html>

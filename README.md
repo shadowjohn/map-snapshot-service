@@ -1,6 +1,6 @@
 # Map Snapshot Service
 
-把地圖變成可以保存、傳遞、快取的 PNG 圖片服務。第一版以 PHP 實作 `Two Point Snapshot`，讓使用者傳入兩組座標與名稱，就能產生可放進報表、通知、工單或 README 的地圖截圖。
+把地圖變成可以保存、傳遞、快取的 PNG 圖片服務。第一版以 PHP 實作單點、雙點、線段與 polygon 快照，讓使用者傳入座標與名稱，就能產生可放進報表、通知、工單或 README 的地圖截圖。
 
 ![Two Point Snapshot example](assets/images/examples/two-point-fengchia-icc.png)
 
@@ -8,10 +8,25 @@
 
 - Catalog: https://3wa.tw/demo/php/map/map-snapshot-service/
 - Catalog entry file: `index.php`
+- Single Point Demo: https://3wa.tw/demo/php/map/map-snapshot-service/recipes/single-point/demo.html
 - Two Point Demo: https://3wa.tw/demo/php/map/map-snapshot-service/recipes/two-point/demo.html
-- API endpoint: https://3wa.tw/demo/php/map/map-snapshot-service/api/two-point.php
+- Line Demo: https://3wa.tw/demo/php/map/map-snapshot-service/recipes/line/demo.html
+- Polygon Demo: https://3wa.tw/demo/php/map/map-snapshot-service/recipes/polygon/demo.html
+- API endpoints: `api/single-point.php`, `api/two-point.php`, `api/line.php`, `api/polygon.php`
 
-## First Recipe: Two Point Snapshot
+## Recipes
+
+### Single Point Snapshot
+
+```text
+GET /api/single-point.php?latLon=24.1782252,120.6484168
+  &name=逢甲大學
+  &basemap=osm
+  &width=416
+  &height=416
+```
+
+### Two Point Snapshot
 
 ```text
 GET /api/two-point.php?sLatLon=24.1782252,120.6484168
@@ -23,7 +38,27 @@ GET /api/two-point.php?sLatLon=24.1782252,120.6484168
   &height=416
 ```
 
-POST is also supported:
+### Line Snapshot
+
+```text
+GET /api/line.php?points=24.1782252,120.6484168;24.1111272,120.6100528
+  &name=逢甲大學 → ICC 辦公大樓
+  &basemap=osm
+  &width=416
+  &height=416
+```
+
+### Polygon Snapshot
+
+```text
+GET /api/polygon.php?points=24.1835000,120.6422000;24.1835000,120.6578000;24.1722000,120.6578000;24.1722000,120.6422000
+  &name=逢甲周邊範圍
+  &basemap=osm
+  &width=416
+  &height=416
+```
+
+POST is also supported for every endpoint:
 
 ```bash
 curl -X POST 'https://3wa.tw/demo/php/map/map-snapshot-service/api/two-point.php' \
@@ -49,6 +84,8 @@ curl -X POST 'https://3wa.tw/demo/php/map/map-snapshot-service/api/two-point.php
 | `width` | no | `416` | Output width. Clamped from `320` to `1024`. |
 | `height` | no | `416` | Output height. Clamped from `240` to `1024`. |
 | `padding` | no | `40` | Pixel padding around labels and pins. |
+| `latLon` | single-point | | Single point coordinate, WGS84 `lat,lon`. |
+| `points` | line/polygon | | Semicolon-separated WGS84 coordinates: `lat,lon;lat,lon;...`. |
 
 `mode` is accepted only as a legacy alias for old Google-style calls. New integrations should use `basemap`.
 
@@ -73,7 +110,7 @@ References:
 
 ## Caching And Safety
 
-- Snapshot cache: `cache/two-point/{sha256}.png`, default TTL 30 days.
+- Snapshot cache: `cache/{recipe}/{sha256}.png`, default TTL 30 days.
 - Tile cache: `cache/tiles/{provider}/{z}/{x}/{y}.tile`, provider-specific TTL.
 - Bad upstream responses are not cached. A tile is written only after GD can decode it with `imagecreatefromstring()`.
 - Incomplete snapshots are not cached. If any required tile is missed, the API still returns a PNG with a warning, but it will retry instead of preserving a broken map.
@@ -106,15 +143,11 @@ The first version is intentionally plain PHP with no framework dependency.
 
 ## Credits
 
-- Author: 羽山秋人 (https://3wa.tw)
-- Development assistance: Codex
+作者：羽山秋人(https://3wa.tw)；Codex 協作開發。
 
 ## Roadmap
 
-- Single Point Snapshot
 - Multi Point Snapshot
-- Line Snapshot
-- Polygon / Area Snapshot
 - Recipe catalog with copyable GET/POST examples
 - PHP, C#, and Python client wrappers
 - Optional authenticated/internal mode with stronger quota controls

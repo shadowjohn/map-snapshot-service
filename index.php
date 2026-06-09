@@ -565,7 +565,7 @@
     <section class="shell hero">
       <div>
         <h1>把地圖變成可以保存與傳遞的圖片</h1>
-        <p>第一版先提供 Two Point Snapshot：輸入兩組座標與名稱，選擇 OSM、Google 或 EMAP5 底圖，直接產生可放進報表、通知、工單或 README 的 PNG 地圖快照。</p>
+        <p>第一版提供單點、雙點、線段與 polygon 快照：輸入座標與名稱，選擇 OSM、Google 或 EMAP5 底圖，直接產生可放進報表、通知、工單或 README 的 PNG 地圖快照。</p>
         <div class="actions">
           <a class="button primary" href="#demo"><i class="bi bi-play-fill"></i>試用 Two Point</a>
           <a class="button secondary" href="#recipes"><i class="bi bi-grid-3x3-gap"></i>查看型錄</a>
@@ -614,9 +614,12 @@
           <div class="recipe-body">
             <h3>Single Point Snapshot</h3>
             <p>單一地點標記與文字，適合門牌、設備、案件位置。</p>
-            <div class="tags">
-              <span class="tag">Next</span>
-              <span class="tag">Point</span>
+            <div class="recipe-actions">
+              <div class="tags">
+                <span class="tag ready">MVP</span>
+                <span class="tag">Point</span>
+              </div>
+              <a class="recipe-link" href="recipes/single-point/demo.html"><i class="bi bi-box-arrow-up-right"></i>Demo</a>
             </div>
           </div>
         </article>
@@ -646,9 +649,12 @@
           <div class="recipe-body">
             <h3>Line Snapshot</h3>
             <p>線段、路線或多段線，可加方向、距離與線色。</p>
-            <div class="tags">
-              <span class="tag">Next</span>
-              <span class="tag">Line</span>
+            <div class="recipe-actions">
+              <div class="tags">
+                <span class="tag ready">MVP</span>
+                <span class="tag">Line</span>
+              </div>
+              <a class="recipe-link" href="recipes/line/demo.html"><i class="bi bi-box-arrow-up-right"></i>Demo</a>
             </div>
           </div>
         </article>
@@ -659,10 +665,13 @@
           </div>
           <div class="recipe-body">
             <h3>Polygon Snapshot</h3>
-            <p>範圍、工區、災害區塊與 WKT/GeoJSON 的圖片輸出。</p>
-            <div class="tags">
-              <span class="tag">Later</span>
-              <span class="tag">Area</span>
+            <p>範圍、工區、災害區塊的圖片輸出。</p>
+            <div class="recipe-actions">
+              <div class="tags">
+                <span class="tag ready">MVP</span>
+                <span class="tag">Area</span>
+              </div>
+              <a class="recipe-link" href="recipes/polygon/demo.html"><i class="bi bi-box-arrow-up-right"></i>Demo</a>
             </div>
           </div>
         </article>
@@ -717,7 +726,7 @@
 
   <footer>
     <div class="shell footer-line">
-      <span>Map Snapshot Service Preview. First recipe: Two Point Snapshot.</span>
+      <span>Map Snapshot Service Preview. Recipes: Single Point, Two Point, Line, Polygon.</span>
       <span>作者：羽山秋人(<a href="https://3wa.tw">https://3wa.tw</a>)；Codex 協作開發。</span>
     </div>
   </footer>

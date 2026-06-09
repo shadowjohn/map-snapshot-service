@@ -422,6 +422,7 @@ if (!function_exists('mss_project_root')) {
                 'referer' => 'https://www.openstreetmap.org/',
                 'attribution' => '© OpenStreetMap contributors',
                 'cache_ttl' => 604800,
+                'max_zoom' => 19,
                 'enabled' => true,
             ),
             'google' => array(
@@ -435,6 +436,7 @@ if (!function_exists('mss_project_root')) {
                 'referer' => 'https://www.google.com/',
                 'attribution' => '© Google Maps',
                 'cache_ttl' => 3600,
+                'max_zoom' => 21,
                 'enabled' => true,
             ),
             'google-satellite' => array(
@@ -448,6 +450,7 @@ if (!function_exists('mss_project_root')) {
                 'referer' => 'https://www.google.com/',
                 'attribution' => '© Google Maps',
                 'cache_ttl' => 3600,
+                'max_zoom' => 21,
                 'enabled' => true,
             ),
             'google-terrain' => array(
@@ -461,6 +464,7 @@ if (!function_exists('mss_project_root')) {
                 'referer' => 'https://www.google.com/',
                 'attribution' => '© Google Maps',
                 'cache_ttl' => 3600,
+                'max_zoom' => 21,
                 'enabled' => true,
             ),
             'emap5' => array(
@@ -470,6 +474,17 @@ if (!function_exists('mss_project_root')) {
                 'referer' => 'https://maps.nlsc.gov.tw/',
                 'attribution' => '© NLSC',
                 'cache_ttl' => 2592000,
+                'max_zoom' => 20,
+                'enabled' => true,
+            ),
+            'fixture' => array(
+                'key' => 'fixture',
+                'label' => 'Fixture Basemap',
+                'template' => 'https://3wa.tw/demo/php/map/map-snapshot-service/assets/images/map/blank-tile.png',
+                'referer' => 'https://3wa.tw/demo/php/map/map-snapshot-service/',
+                'attribution' => 'Fixture',
+                'cache_ttl' => 31536000,
+                'max_zoom' => 20,
                 'enabled' => true,
             ),
             'baidu' => array(
@@ -517,6 +532,7 @@ if (!function_exists('mss_project_root')) {
             'nlsc' => 'emap5',
             'nlsc-emap5' => 'emap5',
             'baidu' => 'baidu',
+            'fixture' => 'fixture',
         );
 
         return $aliases[$key] ?? 'osm';
@@ -528,6 +544,17 @@ if (!function_exists('mss_project_root')) {
         $key = mss_normalize_basemap($basemap);
 
         return $definitions[$key] ?? $definitions['osm'];
+    }
+
+    function mss_basemap_max_zoom(string $basemap): int
+    {
+        $definition = mss_basemap_definition($basemap);
+        $maxZoom = filter_var($definition['max_zoom'] ?? null, FILTER_VALIDATE_INT);
+        if ($maxZoom === false || $maxZoom === null) {
+            return 20;
+        }
+
+        return min(max((int) $maxZoom, 1), 22);
     }
 
     function mss_build_tile_url_from_template(string $template, int $zoom, int $tileX, int $tileY): string
