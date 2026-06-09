@@ -2,7 +2,17 @@
 
 把地圖變成可以保存、傳遞、快取的 PNG 圖片服務。第一版以 PHP 實作單點、雙點、多點、線段與 polygon 快照，讓使用者傳入座標與名稱，就能產生可放進報表、通知、工單或 README 的地圖截圖。
 
-![Two Point Snapshot example](assets/images/examples/two-point-fengchia-icc.png)
+## Snapshot Examples
+
+All example images below are generated through the service API with `basemap=osm`.
+
+| Single Point | Two Point | Multi Point |
+| --- | --- | --- |
+| ![Single Point OSM Snapshot](assets/images/examples/single-point-fengchia-osm.png) | ![Two Point OSM Snapshot](assets/images/examples/two-point-fengchia-icc.png) | ![Multi Point OSM Snapshot](assets/images/examples/multi-point-fengchia-osm.png) |
+
+| Line | Polygon |
+| --- | --- |
+| ![Line OSM Snapshot](assets/images/examples/line-fengchia-icc-osm.png) | ![Polygon OSM Snapshot](assets/images/examples/polygon-fengchia-osm.png) |
 
 ## Demo
 

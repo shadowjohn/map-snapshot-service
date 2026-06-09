@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1 - 2026-06-10
+
+- Replaced catalog recipe thumbnails with OSM snapshot PNGs generated through the service API.
+- Added README example gallery for Single Point, Two Point, Multi Point, Line, and Polygon recipes.
+
 ## 0.3.0 - 2026-06-10
 
 - Added Multi Point Snapshot recipe, demo page, and API endpoint.

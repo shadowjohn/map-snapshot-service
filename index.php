@@ -283,7 +283,7 @@
     }
 
     .recipe-card {
-      min-height: 260px;
+      min-height: 320px;
       background: var(--surface);
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -293,11 +293,20 @@
     }
 
     .recipe-thumb {
-      height: 128px;
+      height: 180px;
       background: var(--surface-soft);
       border-bottom: 1px solid var(--line);
       position: relative;
       overflow: hidden;
+      display: grid;
+      place-items: center;
+    }
+
+    .recipe-thumb img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
     }
 
     .mini-pin {
@@ -572,12 +581,12 @@
         </div>
       </div>
 
-      <div class="preview-panel" aria-label="two point map preview mockup">
+      <div class="preview-panel" aria-label="two point map preview generated from service">
         <div class="panel-top">
           <span>recipes/two-point</span>
-          <span>PNG 416 x 416</span>
+          <span>OSM PNG 416 x 416</span>
         </div>
-        <img class="snapshot-image" src="assets/images/examples/two-point-fengchia-icc.png?v=20260610c" alt="Two Point Snapshot example from Feng Chia University to ICC office building">
+        <img class="snapshot-image" src="assets/images/examples/two-point-fengchia-icc.png?v=20260610d" alt="Two Point Snapshot example from Feng Chia University to ICC office building">
       </div>
     </section>
 
@@ -590,8 +599,7 @@
       <div class="recipes">
         <article class="recipe-card">
           <div class="recipe-thumb">
-            <span class="mini-pin"></span>
-            <span class="mini-pin two"></span>
+            <img src="assets/images/examples/two-point-fengchia-icc-card.png?v=20260610d" alt="Two point OSM snapshot example">
           </div>
           <div class="recipe-body">
             <h3>Two Point Snapshot</h3>
@@ -609,7 +617,7 @@
 
         <article class="recipe-card">
           <div class="recipe-thumb">
-            <span class="mini-pin"></span>
+            <img src="assets/images/examples/single-point-fengchia-osm-card.png?v=20260610d" alt="Single point OSM snapshot example">
           </div>
           <div class="recipe-body">
             <h3>Single Point Snapshot</h3>
@@ -626,9 +634,7 @@
 
         <article class="recipe-card">
           <div class="recipe-thumb">
-            <span class="mini-pin"></span>
-            <span class="mini-pin two"></span>
-            <span class="mini-pin three"></span>
+            <img src="assets/images/examples/multi-point-fengchia-osm-card.png?v=20260610d" alt="Multi point OSM snapshot example">
           </div>
           <div class="recipe-body">
             <h3>Multi Point Snapshot</h3>
@@ -645,9 +651,7 @@
 
         <article class="recipe-card">
           <div class="recipe-thumb">
-            <span class="mini-line"></span>
-            <span class="mini-pin"></span>
-            <span class="mini-pin two"></span>
+            <img src="assets/images/examples/line-fengchia-icc-osm-card.png?v=20260610d" alt="Line OSM snapshot example">
           </div>
           <div class="recipe-body">
             <h3>Line Snapshot</h3>
@@ -664,7 +668,7 @@
 
         <article class="recipe-card">
           <div class="recipe-thumb">
-            <span class="shape"></span>
+            <img src="assets/images/examples/polygon-fengchia-osm-card.png?v=20260610d" alt="Polygon OSM snapshot example">
           </div>
           <div class="recipe-body">
             <h3>Polygon Snapshot</h3>
