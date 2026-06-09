@@ -65,6 +65,80 @@ if (!function_exists('mss_geometry_parse_points')) {
         return mss_rect($worldPoint['x'] - $padding, $worldPoint['y'] - $padding, $padding * 2.0, $padding * 2.0);
     }
 
+    function mss_geometry_label_bounds(array $worldPoint, array $labelSize, bool $alignLeft = false): array
+    {
+        $labelGap = 12.0;
+        $labelHorizontalPadding = 8.0;
+        $labelVerticalPadding = 5.0;
+        $labelWidth = $labelSize['width'] + ($labelHorizontalPadding * 2.0);
+        $labelHeight = $labelSize['height'] + ($labelVerticalPadding * 2.0);
+
+        return mss_rect(
+            $alignLeft ? $worldPoint['x'] - $labelGap - $labelWidth : $worldPoint['x'] + $labelGap,
+            $worldPoint['y'] - ($labelHeight / 2.0),
+            $labelWidth,
+            $labelHeight
+        );
+    }
+
+    function mss_geometry_build_labeled_points_layout_state(
+        array $points,
+        array $labelSizes,
+        int $outputWidth,
+        int $outputHeight,
+        int $padding,
+        int $maxZoom = 20
+    ): array {
+        $selected = null;
+
+        for ($zoom = min(max($maxZoom, 1), 22); $zoom >= 1; $zoom--) {
+            $worldPoints = array();
+            $contentBounds = null;
+            foreach ($points as $index => $point) {
+                $worldPoint = mss_latlon_to_world((float) $point['lat'], (float) $point['lon'], $zoom);
+                $worldPoints[] = $worldPoint;
+                $contentBounds = mss_rect_union($contentBounds, mss_geometry_point_padding_bounds($worldPoint));
+                $contentBounds = mss_rect_union($contentBounds, mss_geometry_marker_bounds($worldPoint));
+                if (isset($labelSizes[$index]) && is_array($labelSizes[$index])) {
+                    $contentBounds = mss_rect_union($contentBounds, mss_geometry_label_bounds($worldPoint, $labelSizes[$index]));
+                }
+            }
+
+            if ($contentBounds === null) {
+                continue;
+            }
+
+            $candidate = array(
+                'zoom' => $zoom,
+                'worldPoints' => $worldPoints,
+                'contentBounds' => $contentBounds,
+            );
+
+            $availableWidth = max($outputWidth - ($padding * 2), 1);
+            $availableHeight = max($outputHeight - ($padding * 2), 1);
+            $selected = $candidate;
+            if ($contentBounds['width'] <= $availableWidth && $contentBounds['height'] <= $availableHeight) {
+                break;
+            }
+        }
+
+        if ($selected === null) {
+            $worldPoint = mss_latlon_to_world((float) $points[0]['lat'], (float) $points[0]['lon'], 1);
+            $selected = array(
+                'zoom' => 1,
+                'worldPoints' => array($worldPoint),
+                'contentBounds' => mss_geometry_point_padding_bounds($worldPoint),
+            );
+        }
+
+        $extraWidth = max(0.0, ($outputWidth - ($padding * 2)) - $selected['contentBounds']['width']);
+        $extraHeight = max(0.0, ($outputHeight - ($padding * 2)) - $selected['contentBounds']['height']);
+        $selected['originX'] = $selected['contentBounds']['left'] - $padding - ($extraWidth / 2.0);
+        $selected['originY'] = $selected['contentBounds']['top'] - $padding - ($extraHeight / 2.0);
+
+        return $selected;
+    }
+
     function mss_geometry_build_layout_state(
         array $points,
         int $outputWidth,

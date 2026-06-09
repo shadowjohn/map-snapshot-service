@@ -18,6 +18,21 @@ $recipes = array(
             'name' => 'bad',
         ),
     ),
+    'multi-point' => array(
+        'file' => $root . '/recipes/multi-point/multi_point_snapshot.php',
+        'handler' => 'mss_multi_point_handle_request',
+        'valid' => array(
+            'points' => '24.1782252,120.6484168;24.1111272,120.6100528;24.1700000,120.6500000',
+            'names' => '逢甲大學;ICC 辦公大樓;測試點',
+            'basemap' => 'fixture',
+            'width' => '416',
+            'height' => '416',
+        ),
+        'invalid' => array(
+            'points' => '24.1782252,120.6484168',
+            'names' => 'bad',
+        ),
+    ),
     'line' => array(
         'file' => $root . '/recipes/line/line_snapshot.php',
         'handler' => 'mss_line_handle_request',

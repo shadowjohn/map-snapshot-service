@@ -565,7 +565,7 @@
     <section class="shell hero">
       <div>
         <h1>把地圖變成可以保存與傳遞的圖片</h1>
-        <p>第一版提供單點、雙點、線段與 polygon 快照：輸入座標與名稱，選擇 OSM、Google 或 EMAP5 底圖，直接產生可放進報表、通知、工單或 README 的 PNG 地圖快照。</p>
+        <p>第一版提供單點、雙點、多點、線段與 polygon 快照：輸入座標與名稱，選擇 OSM、Google 或 EMAP5 底圖，直接產生可放進報表、通知、工單或 README 的 PNG 地圖快照。</p>
         <div class="actions">
           <a class="button primary" href="#demo"><i class="bi bi-play-fill"></i>試用 Two Point</a>
           <a class="button secondary" href="#recipes"><i class="bi bi-grid-3x3-gap"></i>查看型錄</a>
@@ -633,9 +633,12 @@
           <div class="recipe-body">
             <h3>Multi Point Snapshot</h3>
             <p>多點標記、編號或群組名稱，適合巡檢與案件清單。</p>
-            <div class="tags">
-              <span class="tag">Next</span>
-              <span class="tag">Points</span>
+            <div class="recipe-actions">
+              <div class="tags">
+                <span class="tag ready">MVP</span>
+                <span class="tag">Points</span>
+              </div>
+              <a class="recipe-link" href="recipes/multi-point/demo.html"><i class="bi bi-box-arrow-up-right"></i>Demo</a>
             </div>
           </div>
         </article>
@@ -681,7 +684,7 @@
     <section id="demo" class="shell section">
       <div class="section-head">
         <h2>Two Point Demo</h2>
-        <p>這個入口直接呼叫 <code>api/two-point.php</code>。GET 適合短參數，POST 則保留給後續多點、線、面這類較長資料。</p>
+        <p>這個入口直接呼叫 <code>api/two-point.php</code>。GET 適合短參數，多點、線、面這類較長資料也可用 POST 傳送。</p>
       </div>
 
       <div class="demo">
@@ -726,7 +729,7 @@
 
   <footer>
     <div class="shell footer-line">
-      <span>Map Snapshot Service Preview. Recipes: Single Point, Two Point, Line, Polygon.</span>
+      <span>Map Snapshot Service Preview. Recipes: Single Point, Two Point, Multi Point, Line, Polygon.</span>
       <span>作者：羽山秋人(<a href="https://3wa.tw">https://3wa.tw</a>)；Codex 協作開發。</span>
     </div>
   </footer>

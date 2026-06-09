@@ -1,6 +1,6 @@
 # Map Snapshot Service
 
-把地圖變成可以保存、傳遞、快取的 PNG 圖片服務。第一版以 PHP 實作單點、雙點、線段與 polygon 快照，讓使用者傳入座標與名稱，就能產生可放進報表、通知、工單或 README 的地圖截圖。
+把地圖變成可以保存、傳遞、快取的 PNG 圖片服務。第一版以 PHP 實作單點、雙點、多點、線段與 polygon 快照，讓使用者傳入座標與名稱，就能產生可放進報表、通知、工單或 README 的地圖截圖。
 
 ![Two Point Snapshot example](assets/images/examples/two-point-fengchia-icc.png)
 
@@ -10,9 +10,10 @@
 - Catalog entry file: `index.php`
 - Single Point Demo: https://3wa.tw/demo/php/map/map-snapshot-service/recipes/single-point/demo.html
 - Two Point Demo: https://3wa.tw/demo/php/map/map-snapshot-service/recipes/two-point/demo.html
+- Multi Point Demo: https://3wa.tw/demo/php/map/map-snapshot-service/recipes/multi-point/demo.html
 - Line Demo: https://3wa.tw/demo/php/map/map-snapshot-service/recipes/line/demo.html
 - Polygon Demo: https://3wa.tw/demo/php/map/map-snapshot-service/recipes/polygon/demo.html
-- API endpoints: `api/single-point.php`, `api/two-point.php`, `api/line.php`, `api/polygon.php`
+- API endpoints: `api/single-point.php`, `api/two-point.php`, `api/multi-point.php`, `api/line.php`, `api/polygon.php`
 
 ## Recipes
 
@@ -33,6 +34,16 @@ GET /api/two-point.php?sLatLon=24.1782252,120.6484168
   &eLatLon=24.1111272,120.6100528
   &sName=起點: 逢甲大學
   &eName=目的地: ICC 辦公大樓
+  &basemap=osm
+  &width=416
+  &height=416
+```
+
+### Multi Point Snapshot
+
+```text
+GET /api/multi-point.php?points=24.1782252,120.6484168;24.1111272,120.6100528;24.1700000,120.6500000
+  &names=逢甲大學;ICC 辦公大樓;水湳測試點
   &basemap=osm
   &width=416
   &height=416
@@ -85,7 +96,8 @@ curl -X POST 'https://3wa.tw/demo/php/map/map-snapshot-service/api/two-point.php
 | `height` | no | `416` | Output height. Clamped from `240` to `1024`. |
 | `padding` | no | `40` | Pixel padding around labels and pins. |
 | `latLon` | single-point | | Single point coordinate, WGS84 `lat,lon`. |
-| `points` | line/polygon | | Semicolon-separated WGS84 coordinates: `lat,lon;lat,lon;...`. |
+| `points` | multi-point/line/polygon | | Semicolon-separated WGS84 coordinates: `lat,lon;lat,lon;...`. |
+| `names` | multi-point | auto number | Semicolon-separated labels matching `points`; `labels` is accepted as an alias. |
 
 `mode` is accepted only as a legacy alias for old Google-style calls. New integrations should use `basemap`.
 
@@ -147,7 +159,6 @@ The first version is intentionally plain PHP with no framework dependency.
 
 ## Roadmap
 
-- Multi Point Snapshot
 - Recipe catalog with copyable GET/POST examples
 - PHP, C#, and Python client wrappers
 - Optional authenticated/internal mode with stronger quota controls

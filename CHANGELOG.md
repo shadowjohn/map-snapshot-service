@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.0 - 2026-06-10
+
+- Added Multi Point Snapshot recipe, demo page, and API endpoint.
+- Added per-point label parsing through `names` or `labels`, with automatic numbering when labels are omitted.
+- Added labeled point layout bounds so multi-point labels are included when choosing zoom and image origin.
+
 ## 0.2.0 - 2026-06-10
 
 - Added Single Point Snapshot recipe, demo page, and API endpoint.

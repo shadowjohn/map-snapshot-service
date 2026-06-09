@@ -9,15 +9,15 @@ The highest-risk areas are unauthenticated public rendering requests, upstream t
 In scope:
 
 - Runtime PHP renderer and API: `api/`, `recipes/`, `renderer/`
-- Public catalog/demo pages: `index.php`, compatibility redirect `index.html`, and `recipes/two-point/demo.html`
+- Public catalog/demo pages: `index.php`, compatibility redirect `index.html`, and `recipes/*/demo.html`
 - Public assets and cache controls: `assets/`, `cache/.htaccess`, `.htaccess`
-- Test coverage: `tests/two_point_renderer_test.php`
+- Test coverage: `tests/two_point_renderer_test.php` and `tests/geometry_recipes_test.php`
 
 Out of scope:
 
 - Apache/Nginx global host configuration outside this repository
 - GitHub repository permissions and deployment automation
-- Future client SDKs and future recipes not yet implemented
+- Future client SDKs and recipes not yet implemented
 
 Assumptions:
 
@@ -37,9 +37,9 @@ Open questions:
 ### Primary components
 
 - Catalog UI: `index.php` presents recipe cards and a live two-point form.
-- Recipe demo UI: `recipes/two-point/demo.html` submits GET or POST requests to the API.
-- API entrypoints: `api/single-point.php`, `api/two-point.php`, `api/line.php`, and `api/polygon.php` merge `$_GET` and `$_POST`, apply rate limiting, and return PNG bytes.
-- Recipe modules: `recipes/single-point/`, `recipes/two-point/`, `recipes/line/`, and `recipes/polygon/` validate coordinates, clamp dimensions, compute layout, and write snapshot cache files.
+- Recipe demo UI: `recipes/*/demo.html` submits GET or POST requests to the API.
+- API entrypoints: `api/single-point.php`, `api/two-point.php`, `api/multi-point.php`, `api/line.php`, and `api/polygon.php` merge `$_GET` and `$_POST`, apply rate limiting, and return PNG bytes.
+- Recipe modules: `recipes/single-point/`, `recipes/two-point/`, `recipes/multi-point/`, `recipes/line/`, and `recipes/polygon/` validate coordinates, clamp dimensions, compute layout, and write snapshot cache files.
 - Shared renderer: `renderer/map_snapshot_renderer.php` and `recipes/_shared/geometry_snapshot.php` contain coordinate projection, provider allowlist, tile fetching, tile cache validation, tile completeness stats, attribution drawing, geometry drawing, text drawing, and cache helpers.
 - Cache store: `cache/` stores generated snapshots, tile bytes, and rate-limit counters; direct web access is denied by `cache/.htaccess`.
 
@@ -52,7 +52,7 @@ Evidence anchors:
 
 ### Data flows and trust boundaries
 
-- Browser or HTTP client -> `api/two-point.php`: untrusted GET/POST parameters over HTTPS; no auth; rate limited per remote IP; coordinates parsed with numeric bounds; labels UTF-8 checked and truncated.
+- Browser or HTTP client -> `api/*.php`: untrusted GET/POST parameters over HTTPS; no auth; rate limited per remote IP; coordinates parsed with numeric bounds; labels UTF-8 checked and truncated.
 - API -> recipe renderer: normalized scalar parameters; width and height clamped; basemap normalized to an allowlisted key.
 - Renderer -> upstream tile providers: computed `z/x/y` tile requests over HTTPS; fixed provider templates only; curl timeouts; custom User-Agent and provider Referer.
 - Renderer -> cache filesystem: generated PNG and tile bytes written under `cache/`; image bytes are decoded before tile cache writes; snapshot cache is read only if PNG signature and TTL are valid; incomplete tile renders are returned but not snapshot-cached.
@@ -62,9 +62,9 @@ Evidence anchors:
 
 ```mermaid
 flowchart LR
-  U["Browser or client"] --> A["Two Point API"]
+  U["Browser or client"] --> A["Snapshot API"]
   D["Demo pages"] --> A
-  A --> R["Two Point recipe"]
+  A --> R["Recipe renderer"]
   R --> C["Cache filesystem"]
   R --> T["Tile providers"]
   T --> R
@@ -101,7 +101,7 @@ Non-capabilities:
 
 | Threat | Abuse path | Existing controls | Likelihood | Impact | Priority |
 | --- | --- | --- | --- | --- | --- |
-| Render and tile-fetch DoS | Attacker sends many uncached coordinate pairs or large dimensions, forcing PHP/GD work and upstream tile requests. | Per-IP file rate limit in `api/two-point.php`; output clamp in `recipes/two-point/two_point_snapshot.php`; curl timeouts; local tile cache. | Medium: public unauthenticated endpoint. | High: host and upstream providers can be affected. | High |
+| Render and tile-fetch DoS | Attacker sends many uncached coordinates, multi-point payloads, or large dimensions, forcing PHP/GD work and upstream tile requests. | Per-IP file rate limits in `api/*.php`; output clamp in recipe handlers; multi-point/line/polygon point count limit; curl timeouts; local tile cache. | Medium: public unauthenticated endpoints. | High: host and upstream providers can be affected. | High |
 | Upstream WMTS/tile provider ban | Public demo generates too many tile requests, lacks cache, or repeatedly fetches bad tiles. | Provider TTLs; no prefetch feature; tile cache; User-Agent/Referer; attribution in PNG; bad images not cached; incomplete snapshots not cached. | Medium: normal use is small, but bots can trigger load. | High: OSM/EMAP5/Google access may be blocked. | High |
 | SSRF via custom basemap URL | Attacker tries to make renderer fetch internal/admin URLs. | No URL parameter; `mss_basemap_definitions()` is an allowlist; HTTPS-only tile URLs. | Low: no arbitrary URL entrypoint. | High if introduced later. | Medium |
 | Cache poisoning with non-image or incomplete upstream response | Upstream returns HTML, ban page, corrupt bytes, or only some required tiles; service stores the broken output. | `imagecreatefromstring()` must succeed before tile bytes are cached; invalid cached bytes are unlinked on read; snapshot cache writes require complete tile stats. | Medium: upstream errors happen. | Medium: broken snapshots and persistent bad output. | Medium |
@@ -134,17 +134,17 @@ Recommended next controls:
 
 ## Focus paths for manual security review
 
-- `api/two-point.php`: public entrypoint, rate-limit behavior, response headers.
+- `api/*.php`: public entrypoints, rate-limit behavior, response headers.
 - `renderer/map_snapshot_renderer.php`: provider allowlist, curl options, cache validation, rate-limit file locking.
-- `recipes/two-point/two_point_snapshot.php`: coordinate validation, output clamping, snapshot cache key.
+- `recipes/*/*_snapshot.php`: coordinate validation, output clamping, point count limits, snapshot cache keys.
 - `.htaccess`: dotfile and `.git` deny coverage in this hosting environment.
 - `cache/.htaccess`: direct cache access denial.
 - `.gitignore`: local state, cache, and key exclusion.
-- `recipes/two-point/demo.html`: POST/GET behavior and whether demo controls encourage excessive provider switching.
+- `recipes/*/demo.html`: POST/GET behavior and whether demo controls encourage excessive provider switching.
 
 ## Quality check
 
-- Covered discovered runtime entrypoints: root catalog, two-point demo, and `api/two-point.php`.
+- Covered discovered runtime entrypoints: root catalog, recipe demos, and `api/*.php`.
 - Covered each trust boundary: public client to API, API to renderer, renderer to upstream tile providers, renderer to cache filesystem, web server to repo files.
 - Separated runtime behavior from tests and future SDKs.
 - Reflected the current public-demo assumption and noted where production auth/quota context would change risk.

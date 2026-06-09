@@ -2,7 +2,6 @@
 
 ## Near Term
 
-- Add Multi Point Snapshot recipe with POST-first payload examples.
 - Add optional line stroke color, width, direction, and distance display.
 - Add WKT and GeoJSON parsers for polygon input.
 - Add provider-level daily quota counters and cache-size pruning.
@@ -12,6 +11,7 @@
 ## Product Line
 
 - Build the recipe catalog into a browsable gallery with copyable GET/POST examples.
+- Add CSV/JSON payload support for Multi Point Snapshot.
 - Add C# and Python client wrappers.
 - Add API-key or internal-only mode for heavier production usage.
 - Add official Google Maps Platform Map Tiles API integration.
