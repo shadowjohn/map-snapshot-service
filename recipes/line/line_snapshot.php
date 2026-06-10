@@ -75,6 +75,11 @@ if (!function_exists('mss_line_points_from_params')) {
         return $midpoints;
     }
 
+    function mss_line_segment_label_align_left(int $index): bool
+    {
+        return ($index % 2) === 1;
+    }
+
     function mss_line_build_layout_state(
         array $points,
         int $outputWidth,
@@ -104,7 +109,7 @@ if (!function_exists('mss_line_points_from_params')) {
 
             foreach (mss_line_world_midpoints($worldPoints) as $index => $midpoint) {
                 if (isset($segmentLabelSizes[$index]) && is_array($segmentLabelSizes[$index])) {
-                    $contentBounds = mss_rect_union($contentBounds, mss_geometry_label_bounds($midpoint, $segmentLabelSizes[$index], false));
+                    $contentBounds = mss_rect_union($contentBounds, mss_geometry_label_bounds($midpoint, $segmentLabelSizes[$index], mss_line_segment_label_align_left($index)));
                 }
             }
 
@@ -179,7 +184,7 @@ if (!function_exists('mss_line_points_from_params')) {
             mss_draw_label($image, $segmentName, array(
                 'x' => (float) $midpoint['x'] - (float) $layout['originX'],
                 'y' => (float) $midpoint['y'] - (float) $layout['originY'],
-            ), false, $fontPath);
+            ), mss_line_segment_label_align_left($index), $fontPath);
         }
 
         $renderMeta = mss_geometry_finish_image($image, $layout, $tileStats, $basemap);

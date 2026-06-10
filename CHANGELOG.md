@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.3 - 2026-06-10
+
+- Updated the Line demo and generated OSM line examples to show a multi-segment route using `lineNames=5km,2km,,200m`.
+
 ## 0.3.2 - 2026-06-10
 
 - Updated Line Snapshot to draw `sName` and `eName` endpoint labels like Two Point Snapshot.

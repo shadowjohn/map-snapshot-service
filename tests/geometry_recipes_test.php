@@ -37,10 +37,10 @@ $recipes = array(
         'file' => $root . '/recipes/line/line_snapshot.php',
         'handler' => 'mss_line_handle_request',
         'valid' => array(
-            'points' => '24.1782252,120.6484168;24.1500000,120.6300000;24.1111272,120.6100528',
+            'points' => '24.1782252,120.6484168;24.1600000,120.6400000;24.1450000,120.6280000;24.1280000,120.6200000;24.1111272,120.6100528',
             'sName' => '逢甲大學',
             'eName' => 'ICC 辦公大樓',
-            'lineNames' => '5km|2km',
+            'lineNames' => '5km,2km,,200m',
             'basemap' => 'fixture',
             'width' => '416',
             'height' => '416',
@@ -125,16 +125,16 @@ foreach (glob($lineCacheDir . '/*.png') ?: array() as $file) {
 }
 
 $lineBase = array(
-    'points' => '24.1782252,120.6484168;24.1500000,120.6300000;24.1111272,120.6100528',
+    'points' => '24.1782252,120.6484168;24.1600000,120.6400000;24.1450000,120.6280000;24.1280000,120.6200000;24.1111272,120.6100528',
     'sName' => '逢甲大學',
     'eName' => 'ICC 辦公大樓',
-    'lineNames' => '5km|2km',
+    'lineNames' => '5km,2km,,200m',
     'basemap' => 'fixture',
     'width' => '416',
     'height' => '416',
 );
 mss_line_handle_request($lineBase, array('cache_dir' => $lineCacheDir));
-mss_line_handle_request(array_merge($lineBase, array('lineNames' => '5km,3km')), array('cache_dir' => $lineCacheDir));
+mss_line_handle_request(array_merge($lineBase, array('lineNames' => '5km|3km||200m')), array('cache_dir' => $lineCacheDir));
 mss_line_handle_request(array_merge($lineBase, array('sName' => '逢甲校門')), array('cache_dir' => $lineCacheDir));
 assert_true(count(glob($lineCacheDir . '/*.png') ?: array()) === 3, 'line cache key includes sName/eName/lineNames');
 

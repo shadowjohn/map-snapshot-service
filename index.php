@@ -586,7 +586,7 @@
           <span>recipes/two-point</span>
           <span>OSM PNG 416 x 416</span>
         </div>
-        <img class="snapshot-image" src="assets/images/examples/two-point-fengchia-icc.png?v=20260610f" alt="Two Point Snapshot example from Feng Chia University to ICC office building">
+        <img class="snapshot-image" src="assets/images/examples/two-point-fengchia-icc.png?v=20260610g" alt="Two Point Snapshot example from Feng Chia University to ICC office building">
       </div>
     </section>
 
@@ -599,7 +599,7 @@
       <div class="recipes">
         <article class="recipe-card">
           <div class="recipe-thumb">
-            <img src="assets/images/examples/two-point-fengchia-icc-card.png?v=20260610f" alt="Two point OSM snapshot example">
+            <img src="assets/images/examples/two-point-fengchia-icc-card.png?v=20260610g" alt="Two point OSM snapshot example">
           </div>
           <div class="recipe-body">
             <h3>Two Point Snapshot</h3>
@@ -617,7 +617,7 @@
 
         <article class="recipe-card">
           <div class="recipe-thumb">
-            <img src="assets/images/examples/single-point-fengchia-osm-card.png?v=20260610f" alt="Single point OSM snapshot example">
+            <img src="assets/images/examples/single-point-fengchia-osm-card.png?v=20260610g" alt="Single point OSM snapshot example">
           </div>
           <div class="recipe-body">
             <h3>Single Point Snapshot</h3>
@@ -634,7 +634,7 @@
 
         <article class="recipe-card">
           <div class="recipe-thumb">
-            <img src="assets/images/examples/multi-point-fengchia-osm-card.png?v=20260610f" alt="Multi point OSM snapshot example">
+            <img src="assets/images/examples/multi-point-fengchia-osm-card.png?v=20260610g" alt="Multi point OSM snapshot example">
           </div>
           <div class="recipe-body">
             <h3>Multi Point Snapshot</h3>
@@ -651,7 +651,7 @@
 
         <article class="recipe-card">
           <div class="recipe-thumb">
-            <img src="assets/images/examples/line-fengchia-icc-osm-card.png?v=20260610f" alt="Line OSM snapshot example">
+            <img src="assets/images/examples/line-fengchia-icc-osm-card.png?v=20260610g" alt="Line OSM snapshot example">
           </div>
           <div class="recipe-body">
             <h3>Line Snapshot</h3>
@@ -668,7 +668,7 @@
 
         <article class="recipe-card">
           <div class="recipe-thumb">
-            <img src="assets/images/examples/polygon-fengchia-osm-card.png?v=20260610f" alt="Polygon OSM snapshot example">
+            <img src="assets/images/examples/polygon-fengchia-osm-card.png?v=20260610g" alt="Polygon OSM snapshot example">
           </div>
           <div class="recipe-body">
             <h3>Polygon Snapshot</h3>
