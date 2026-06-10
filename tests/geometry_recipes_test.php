@@ -37,8 +37,10 @@ $recipes = array(
         'file' => $root . '/recipes/line/line_snapshot.php',
         'handler' => 'mss_line_handle_request',
         'valid' => array(
-            'points' => '24.1782252,120.6484168;24.1111272,120.6100528',
-            'name' => '逢甲大學 → ICC 辦公大樓',
+            'points' => '24.1782252,120.6484168;24.1500000,120.6300000;24.1111272,120.6100528',
+            'sName' => '逢甲大學',
+            'eName' => 'ICC 辦公大樓',
+            'lineNames' => '5km|2km',
             'basemap' => 'fixture',
             'width' => '416',
             'height' => '416',
@@ -113,5 +115,27 @@ foreach ($recipes as $name => $recipe) {
     $cacheAfterIncomplete = count(glob($cacheDir . '/*.png') ?: array());
     assert_true($cacheBeforeIncomplete === $cacheAfterIncomplete, "{$name} incomplete tile render is not cached");
 }
+
+$lineCacheDir = sys_get_temp_dir() . '/map_snapshot_service_line_params_' . getmypid();
+if (!is_dir($lineCacheDir)) {
+    mkdir($lineCacheDir, 0700, true);
+}
+foreach (glob($lineCacheDir . '/*.png') ?: array() as $file) {
+    unlink($file);
+}
+
+$lineBase = array(
+    'points' => '24.1782252,120.6484168;24.1500000,120.6300000;24.1111272,120.6100528',
+    'sName' => '逢甲大學',
+    'eName' => 'ICC 辦公大樓',
+    'lineNames' => '5km|2km',
+    'basemap' => 'fixture',
+    'width' => '416',
+    'height' => '416',
+);
+mss_line_handle_request($lineBase, array('cache_dir' => $lineCacheDir));
+mss_line_handle_request(array_merge($lineBase, array('lineNames' => '5km,3km')), array('cache_dir' => $lineCacheDir));
+mss_line_handle_request(array_merge($lineBase, array('sName' => '逢甲校門')), array('cache_dir' => $lineCacheDir));
+assert_true(count(glob($lineCacheDir . '/*.png') ?: array()) === 3, 'line cache key includes sName/eName/lineNames');
 
 echo "PASS\n";

@@ -14,12 +14,14 @@
   <header><div class="shell nav"><a class="brand" href="../../index.php"><span class="brand-mark"><i class="bi bi-map"></i></span><span>Map Snapshot Service</span></a><span class="tag">Line</span></div></header>
   <main class="shell">
     <h1>Line Snapshot Demo</h1>
-    <p class="intro">用 `points=lat,lon;lat,lon` 畫線段或多段線。</p>
+    <p class="intro">用 `points=lat,lon;lat,lon` 畫線段或多段線，並用 `sName`、`eName`、`lineNames` 標示從哪到哪與每段距離。</p>
     <div class="workspace">
       <section class="panel"><div class="panel-title"><span>Parameters</span><span>GET / POST</span></div>
         <form id="snapshotForm">
-          <label class="field">points <textarea id="points">24.1782252,120.6484168;24.1111272,120.6100528</textarea></label>
-          <label class="field">name <input id="name" value="逢甲大學 → ICC 辦公大樓"></label>
+          <label class="field">points <textarea id="points">24.1782252,120.6484168;24.1450000,120.6280000;24.1111272,120.6100528</textarea></label>
+          <label class="field">sName <input id="sName" value="逢甲大學"></label>
+          <label class="field">eName <input id="eName" value="ICC 辦公大樓"></label>
+          <label class="field">lineNames <input id="lineNames" value="5km|2km"></label>
           <div class="split"><label class="field">basemap <select id="basemap"><option value="osm" selected>OpenStreetMap</option><option value="google">Google Roadmap</option><option value="emap5">國土測繪 EMAP5</option></select></label><label class="field">REQUEST <select id="requestMethod"><option value="GET" selected>GET</option><option value="POST">POST</option></select></label></div>
           <div class="split"><label class="field">width <input id="width" value="416"></label><label class="field">height <input id="height" value="416"></label></div>
           <button class="button" id="generateButton" type="submit"><i class="bi bi-image"></i><span>產生 PNG</span></button>
@@ -31,7 +33,7 @@
   <script>
     const endpoint='../../api/line.php'; const publicEndpoint='https://3wa.tw/demo/php/map/map-snapshot-service/api/line.php';
     const form=document.getElementById('snapshotForm'), image=document.getElementById('snapshotResult'), snippet=document.getElementById('apiSnippet'), statusText=document.getElementById('status'), frame=document.getElementById('imageFrame'), button=document.getElementById('generateButton'); let objectUrl='', token=0;
-    function paramsFromForm(){const p=new URLSearchParams(); for(const id of ['points','name','basemap','width','height']) p.set(id,document.getElementById(id).value.trim()); return p;}
+    function paramsFromForm(){const p=new URLSearchParams(); for(const id of ['points','sName','eName','lineNames','basemap','width','height']) p.set(id,document.getElementById(id).value.trim()); return p;}
     function showSnippet(method,p){snippet.textContent=method==='POST'?["curl -X POST '"+publicEndpoint+"' \\",...Array.from(p.entries()).map(([k,v])=>`  --data-urlencode '${k}=${v}'`)].join("\n"):Array.from(p.entries()).map(([k,v],i)=>`  ${i===0?'?':'&'}${k}=${encodeURIComponent(v)}`).reduce((a,l)=>a.concat(l),['GET '+publicEndpoint]).join("\n");}
     async function render(event){if(event)event.preventDefault(); const t=++token,p=paramsFromForm(),m=document.getElementById('requestMethod').value; showSnippet(m,p); statusText.textContent='rendering'; frame.classList.add('loading'); button.disabled=true; button.innerHTML='<span class="spinner"></span><span>產生中</span>'; if(objectUrl){URL.revokeObjectURL(objectUrl);objectUrl='';} const done=()=>{if(t!==token)return; frame.classList.remove('loading'); button.disabled=false; button.innerHTML='<i class="bi bi-image"></i><span>產生 PNG</span>'; statusText.textContent='ready';}; if(m==='POST'){const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:p}); objectUrl=URL.createObjectURL(await r.blob()); image.src=objectUrl; done();} else {image.onload=done; image.onerror=done; image.src=endpoint+'?'+p.toString();}}
     form.addEventListener('submit',render); form.addEventListener('change',render); render();

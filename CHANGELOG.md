@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.2 - 2026-06-10
+
+- Updated Line Snapshot to draw `sName` and `eName` endpoint labels like Two Point Snapshot.
+- Added `lineNames` for per-segment line labels, accepting `|` or comma-separated values with empty segments allowed.
+- Updated the Line demo, README example, and generated OSM line example images.
+
 ## 0.3.1 - 2026-06-10
 
 - Replaced catalog recipe thumbnails with OSM snapshot PNGs generated through the service API.

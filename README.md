@@ -62,8 +62,10 @@ GET /api/multi-point.php?points=24.1782252,120.6484168;24.1111272,120.6100528;24
 ### Line Snapshot
 
 ```text
-GET /api/line.php?points=24.1782252,120.6484168;24.1111272,120.6100528
-  &name=逢甲大學 → ICC 辦公大樓
+GET /api/line.php?points=24.1782252,120.6484168;24.1450000,120.6280000;24.1111272,120.6100528
+  &sName=逢甲大學
+  &eName=ICC 辦公大樓
+  &lineNames=5km|2km
   &basemap=osm
   &width=416
   &height=416
@@ -108,6 +110,7 @@ curl -X POST 'https://3wa.tw/demo/php/map/map-snapshot-service/api/two-point.php
 | `latLon` | single-point | | Single point coordinate, WGS84 `lat,lon`. |
 | `points` | multi-point/line/polygon | | Semicolon-separated WGS84 coordinates: `lat,lon;lat,lon;...`. |
 | `names` | multi-point | auto number | Semicolon-separated labels matching `points`; `labels` is accepted as an alias. |
+| `lineNames` | line | | Segment labels matching each line segment. `|` and comma separators are accepted, so `5km|2km` and `5km,2km,,200m` both work. |
 
 `mode` is accepted only as a legacy alias for old Google-style calls. New integrations should use `basemap`.
 
