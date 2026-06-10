@@ -17,6 +17,7 @@ All example images below are generated through the service API with `basemap=osm
 ## Demo
 
 - Catalog: https://3wa.tw/demo/php/map/map-snapshot-service/
+- AI Agent API Reference: https://3wa.tw/demo/php/map/map-snapshot-service/ai-agent-api.html
 - Catalog entry file: `index.php`
 - Single Point Demo: https://3wa.tw/demo/php/map/map-snapshot-service/recipes/single-point/demo.html
 - Two Point Demo: https://3wa.tw/demo/php/map/map-snapshot-service/recipes/two-point/demo.html

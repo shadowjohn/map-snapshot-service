@@ -565,6 +565,7 @@
         <a href="#recipes">Recipes</a>
         <a href="#demo">Demo</a>
         <a href="#api">API</a>
+        <a href="ai-agent-api.html">AI API</a>
         <a href="https://github.com/shadowjohn/map-snapshot-service">GitHub</a>
       </nav>
     </div>
