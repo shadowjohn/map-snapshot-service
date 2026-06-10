@@ -169,6 +169,10 @@ The first version is intentionally plain PHP with no framework dependency.
 - PHP GD extension
 - A readable CJK-capable font on the host for Chinese labels
 
+## Deployment Permissions
+
+After pulling or copying the project into the web root, run `./chmod.sh` from the project root. It restores web-readable permissions for PHP entrypoints, recipe includes, demos, docs, and static assets while leaving generated cache contents alone.
+
 ## Credits
 
 作者：羽山秋人( https://3wa.tw )；Codex 協作開發。
