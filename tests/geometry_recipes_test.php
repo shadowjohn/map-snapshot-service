@@ -138,4 +138,23 @@ mss_line_handle_request(array_merge($lineBase, array('lineNames' => '5km|3km||20
 mss_line_handle_request(array_merge($lineBase, array('sName' => '逢甲校門')), array('cache_dir' => $lineCacheDir));
 assert_true(count(glob($lineCacheDir . '/*.png') ?: array()) === 3, 'line cache key includes sName/eName/lineNames');
 
+$polygonNoLabelCacheDir = sys_get_temp_dir() . '/map_snapshot_service_polygon_no_label_' . getmypid();
+if (!is_dir($polygonNoLabelCacheDir)) {
+    mkdir($polygonNoLabelCacheDir, 0700, true);
+}
+foreach (glob($polygonNoLabelCacheDir . '/*.png') ?: array() as $file) {
+    unlink($file);
+}
+
+$polygonBase = array(
+    'points' => '24.1835000,120.6422000;24.1835000,120.6578000;24.1722000,120.6578000;24.1722000,120.6422000',
+    'basemap' => 'fixture',
+    'width' => '416',
+    'height' => '416',
+);
+$polygonWithoutLabel = mss_polygon_handle_request(array_merge($polygonBase, array('name' => '')), array('cache_dir' => $polygonNoLabelCacheDir));
+$polygonWithLabel = mss_polygon_handle_request(array_merge($polygonBase, array('name' => 'Polygon')), array('cache_dir' => $polygonNoLabelCacheDir));
+assert_png($polygonWithoutLabel, 'polygon with empty name still returns PNG bytes');
+assert_true($polygonWithoutLabel !== $polygonWithLabel, 'polygon empty name does not draw default label bubble');
+
 echo "PASS\n";

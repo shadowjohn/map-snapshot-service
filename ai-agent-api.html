@@ -512,7 +512,7 @@
         <div class="endpoint">
           <h3>Polygon Snapshot</h3>
           <span class="path">POST /api/polygon.php</span>
-          <p><strong>Required:</strong> <code>points</code> with at least three coordinates. <strong>Optional:</strong> <code>name</code>, <code>basemap</code>, <code>width</code>, <code>height</code>, <code>padding</code>.</p>
+          <p><strong>Required:</strong> <code>points</code> with at least three coordinates. <strong>Optional:</strong> <code>name</code>, <code>basemap</code>, <code>width</code>, <code>height</code>, <code>padding</code>. Empty or omitted <code>name</code> draws no label bubble.</p>
           <pre><code>curl -X POST 'https://3wa.tw/demo/php/map/map-snapshot-service/api/polygon.php' \
   --data-urlencode 'points=24.1835000,120.6422000;24.1835000,120.6578000;24.1722000,120.6578000;24.1722000,120.6422000' \
   --data-urlencode 'name=逢甲周邊範圍' \

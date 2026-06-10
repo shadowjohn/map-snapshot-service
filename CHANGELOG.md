@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.4 - 2026-06-10
+
+- Updated Polygon Snapshot so an empty or omitted `name` does not draw a default label bubble.
+
 ## 0.3.3 - 2026-06-10
 
 - Updated the Line demo and generated OSM line examples to show a multi-segment route using `lineNames=5km,2km,,200m`.

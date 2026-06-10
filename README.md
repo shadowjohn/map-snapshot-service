@@ -82,6 +82,8 @@ GET /api/polygon.php?points=24.1835000,120.6422000;24.1835000,120.6578000;24.172
   &height=416
 ```
 
+`name` is optional for polygon snapshots. Empty or omitted `name` draws the polygon without a label bubble.
+
 POST is also supported for every endpoint:
 
 ```bash

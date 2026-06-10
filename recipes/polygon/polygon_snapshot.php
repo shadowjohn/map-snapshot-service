@@ -14,8 +14,9 @@ if (!function_exists('mss_polygon_build_map_image')) {
         ?array &$renderMeta = null
     ) {
         $fontPath = mss_font_path(true);
-        $labelSize = mss_measure_label($name, $fontPath, 14, mss_label_max_text_width($outputWidth, $padding));
-        $layout = mss_geometry_build_layout_state($points, $outputWidth, $outputHeight, $padding, $labelSize, 'label', mss_basemap_max_zoom($basemap));
+        $labelSize = $name === '' ? null : mss_measure_label($name, $fontPath, 14, mss_label_max_text_width($outputWidth, $padding));
+        $labelMode = $name === '' ? 'none' : 'label';
+        $layout = mss_geometry_build_layout_state($points, $outputWidth, $outputHeight, $padding, $labelSize, $labelMode, mss_basemap_max_zoom($basemap));
         [$image, $tileStats] = mss_geometry_prepare_image($layout, $outputWidth, $outputHeight, $basemap);
         $screenPoints = mss_geometry_screen_points($layout);
 
@@ -25,7 +26,9 @@ if (!function_exists('mss_polygon_build_map_image')) {
             mss_color($image, 39, 111, 191, 82),
             mss_color($image, 39, 111, 191, 20)
         );
-        mss_draw_label($image, $name, mss_geometry_screen_centroid($screenPoints), false, $fontPath);
+        if ($name !== '') {
+            mss_draw_label($image, $name, mss_geometry_screen_centroid($screenPoints), false, $fontPath);
+        }
 
         $renderMeta = mss_geometry_finish_image($image, $layout, $tileStats, $basemap);
         return $image;
@@ -34,7 +37,7 @@ if (!function_exists('mss_polygon_build_map_image')) {
     function mss_polygon_handle_request(array $params, array $options = array()): string
     {
         $common = mss_geometry_common_params($params);
-        $name = mss_safe_text($params['name'] ?? null, 'Polygon');
+        $name = mss_safe_text($params['name'] ?? null, '', 80);
         $cacheDirectory = (string) ($options['cache_dir'] ?? (mss_project_root() . '/cache/polygon'));
         $cacheTtlSeconds = mss_int_param($options['cache_ttl'] ?? MSS_DEFAULT_SNAPSHOT_CACHE_TTL_SECONDS, MSS_DEFAULT_SNAPSHOT_CACHE_TTL_SECONDS, 60, 31536000);
 
