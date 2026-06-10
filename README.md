@@ -168,7 +168,7 @@ The first version is intentionally plain PHP with no framework dependency.
 
 ## Credits
 
-作者：羽山秋人(https://3wa.tw)；Codex 協作開發。
+作者：羽山秋人( https://3wa.tw )；Codex 協作開發。
 
 ## Roadmap
 
